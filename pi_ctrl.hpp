@@ -3,7 +3,6 @@
 #ifndef PI_CTRL_HPP
 #define PI_CTRL_HPP
 
-#include "main.h"
 
 class pid_class{
 private:
@@ -22,13 +21,13 @@ private:
     float integral = 0.0f; //いんてぐらる
 
     //motor_calc関数から使うこと
-
-
-public:
     float pi_calc_rad(float);
     float re_convert_rad(float);
+
+public:
     void update_target_spd(float);
-    float motor_calc(float);
+    float motor_calc(float, int);
+    float re_data_change(float, int);
 };
 
 #endif

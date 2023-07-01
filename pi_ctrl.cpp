@@ -1,6 +1,4 @@
 #include "pi_ctrl.hpp"
-#include "main.h"
-
 
 //単位は(rad/s)
 float pid_class::pi_calc_rad(float current_rad){
@@ -36,18 +34,37 @@ void pid_class::update_target_spd(float spd_rate){
 }
 
 //エンコーダーの入力から、PWMの値を求める(この前に、delayを入れておくこととする)
-float pid_class::motor_calc(float current_data){
+float pid_class::motor_calc(float current_data, int calc_mode){
     float rad_per_sec = 0.0f, result_motor_pwm = 0.0f;
+
+    current_data = pid_class::re_data_change(current_data, calc_mode);
 
     rad_per_sec = pid_class::re_convert_rad(current_data);
 
     result_motor_pwm = pid_class::pi_calc_rad(rad_per_sec);
-/*
+
     if(result_motor_pwm < 0){
         result_motor_pwm = 0;
     }else if(result_motor_pwm > 65535){
         result_motor_pwm = 65535;
     }
-*/
+
     return result_motor_pwm;
+}
+
+float pid_class::re_data_change(float re_tim, int calc_mode){
+	if(calc_mode == 0){
+		if(re_tim > 32767){
+			re_tim -= 65535;
+		}
+	}else if(calc_mode == 1){
+		if(re_tim < 32767){
+			re_tim *= -1;
+		}else{
+			re_tim -= 65535;
+			re_tim *= -1;
+		}
+	}
+
+	return re_tim;
 }
